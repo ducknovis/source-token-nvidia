@@ -4,7 +4,10 @@
 ## how to use:
 fork (if you want)
 ```git clone https://github.com/ducknovis/source-token-nvidia.git```
+
 or ```git clone yourgithubrepoafterfork```
+
 open terminal and
 ```npm install```
+
 ```npm start```
