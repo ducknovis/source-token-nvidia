@@ -1,0 +1,26 @@
+{
+  "name": "source-token-nvidia",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ducknovis/source-token-nvidia.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ducknovis/source-token-nvidia/issues"
+  },
+  "homepage": "https://github.com/ducknovis/source-token-nvidia#readme",
+  "description": "",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "puppeteer": "^24.22.0"
+  }
+}

